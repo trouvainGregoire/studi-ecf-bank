@@ -32,6 +32,13 @@ Encore
     // but, you probably want this, unless you're building a single-page app
     .enableSingleRuntimeChunk()
 
+    .addStyleEntry('tailwind', './assets/styles/tailwind.css')
+    .enablePostCssLoader((options) => {
+        options.postcssOptions = {
+            config: './postcss.config.js'
+        };
+    })
+
     /*
      * FEATURE CONFIG
      *
