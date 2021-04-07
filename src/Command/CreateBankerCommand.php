@@ -44,9 +44,6 @@ class CreateBankerCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (!$output instanceof ConsoleOutputInterface) {
-            throw new LogicException('This command accepts only an instance of "ConsoleOutputInterface".');
-        }
 
         $em = $this->entityManager;
 
