@@ -98,6 +98,11 @@ class Client implements UserInterface
      */
     private $updatedAt;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Account::class, mappedBy="client", cascade={"persist", "remove"})
+     */
+    private $account;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -283,5 +288,22 @@ class Client implements UserInterface
     public function setUpdatedAt(?\DateTimeInterface $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
+    }
+
+    public function getAccount(): ?Account
+    {
+        return $this->account;
+    }
+
+    public function setAccount(Account $account): self
+    {
+        // set the owning side of the relation if necessary
+        if ($account->getClient() !== $this) {
+            $account->setClient($this);
+        }
+
+        $this->account = $account;
+
+        return $this;
     }
 }

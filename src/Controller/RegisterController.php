@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Account;
 use App\Entity\Client;
 use App\Form\ClientType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,6 +40,10 @@ class RegisterController extends AbstractController
             $passwordEncoded = $passwordEncoder->encodePassword($client, $client->getPassword());
 
             $client->setPassword($passwordEncoded);
+
+            $account = new Account();
+
+            $client->setAccount($account);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($client);
