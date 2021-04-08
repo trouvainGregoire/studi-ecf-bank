@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ClientRepository::class)
@@ -24,6 +25,9 @@ class Client implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Assert\NotBlank
+     * @Assert\Length(max=180)
+     * @Assert\Email
      */
     private $email;
 
@@ -34,32 +38,42 @@ class Client implements UserInterface
 
     /**
      * @var string The hashed password
+     * @Assert\NotBlank
      * @ORM\Column(type="string")
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
+     * @Assert\Length(max=255)
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
+     * @Assert\Length(max=255)
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="date")
+     * @Assert\NotBlank
      */
     private $birthdate;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
+     * @Assert\Length(max=255)
      */
     private $address;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank
+     * @Assert\Positive
      */
     private $zipcode;
 
@@ -70,6 +84,8 @@ class Client implements UserInterface
 
     /**
      * @Vich\UploadableField(mapping="uploads", fileNameProperty="idCardName")
+     *
+     * @Assert\File(maxSize="5000k", mimeTypes={"application/pdf"}, mimeTypesMessage="Seul le format PDF est autorisé")
      *
      * @var File|null
      */
