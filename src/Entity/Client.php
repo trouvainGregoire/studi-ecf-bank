@@ -103,6 +103,11 @@ class Client implements UserInterface
      */
     private $account;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Banker::class, inversedBy="clients")
+     */
+    private $banker;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -303,6 +308,18 @@ class Client implements UserInterface
         }
 
         $this->account = $account;
+
+        return $this;
+    }
+
+    public function getBanker(): ?Banker
+    {
+        return $this->banker;
+    }
+
+    public function setBanker(?Banker $banker): self
+    {
+        $this->banker = $banker;
 
         return $this;
     }

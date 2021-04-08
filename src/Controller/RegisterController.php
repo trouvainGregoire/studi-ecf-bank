@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Account;
 use App\Entity\Client;
 use App\Form\ClientType;
+use App\Service\ClientDispatcher;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -25,9 +26,10 @@ class RegisterController extends AbstractController
      * @Route("/register", name="register")
      * @param Request $request
      * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param ClientDispatcher $clientDispatcher
      * @return Response
      */
-    public function index(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
+    public function index(Request $request, UserPasswordEncoderInterface $passwordEncoder, ClientDispatcher $clientDispatcher): Response
     {
         $client = new Client();
 
@@ -48,6 +50,8 @@ class RegisterController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($client);
             $entityManager->flush();
+
+            $clientDispatcher->dispatch($client);
 
             return $this->redirectToRoute('client_dashboard');
         }
