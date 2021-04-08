@@ -18,9 +18,11 @@
                         Découvrez Bank'in, La Banque 100% numérique, garantie sans paperasse et sans frais cachés.
                         Nous vous offrons <strong>150 €</strong> à la création de votre compte !
                     </p>
-                    <button class="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+                    <a href="{{ path('register') }}"
+                       class="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+
                         Ouvrir un compte
-                    </button>
+                    </a>
                 </div>
                 <!--Right Col-->
                 <div class="w-full md:w-3/5 py-6 text-center">
@@ -126,14 +128,15 @@
             <div class="w-full mb-4">
                 <div class="h-1 mx-auto bg-white w-1/6 opacity-25 my-0 py-0 rounded-t"></div>
             </div>
-            <h3 class="my-4 text-3xl leading-tight">
+            <h3 class="my-10 text-3xl leading-tight">
                 <strong>150 € offert</strong> à la création de votre compte
             </h3>
-            <button class="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+            <a href="{{ path('register') }}"
+               class="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
                 J'ouvre mon compte
-            </button>
+            </a>
         </section>
-    {% include 'home/_footer.html.twig' %}
+        {% include 'home/_footer.html.twig' %}
     </section>
 
     <script>
@@ -184,6 +187,7 @@
         let navMenu = document.getElementById("nav-toggle");
 
         document.onclick = check;
+
         function check(e) {
             let target = (e && e.target) || (event && event.srcElement);
 
@@ -203,6 +207,7 @@
                 }
             }
         }
+
         function checkParent(t, elm) {
             while (t.parentNode) {
                 if (t == elm) {
