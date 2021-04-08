@@ -4,10 +4,14 @@ namespace App\Entity;
 
 use App\Repository\ClientRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass=ClientRepository::class)
+ * @Vich\Uploadable
  */
 class Client implements UserInterface
 {
@@ -58,6 +62,25 @@ class Client implements UserInterface
      * @ORM\Column(type="integer")
      */
     private $zipcode;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $idCardName;
+
+    /**
+     * @Vich\UploadableField(mapping="uploads", fileNameProperty="idCardName")
+     *
+     * @var File|null
+     */
+    private $idCarFile;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     *
+     * @var \DateTimeInterface|null
+     */
+    private $updatedAt;
 
     public function getId(): ?int
     {
@@ -198,5 +221,51 @@ class Client implements UserInterface
         $this->zipcode = $zipcode;
 
         return $this;
+    }
+
+    public function getIdCardName(): ?string
+    {
+        return $this->idCardName;
+    }
+
+    public function setIdCardName(?string $idCardName): void
+    {
+        $this->idCardName = $idCardName;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getIdCarFile(): ?File
+    {
+        return $this->idCarFile;
+    }
+
+    /**
+     * @param File|UploadedFile|null $idCarFile
+     */
+    public function setIdCarFile(?File $idCarFile = null): void
+    {
+        $this->idCarFile = $idCarFile;
+
+        if(null !== $idCarFile){
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    /**
+     * @return \DateTimeInterface|null
+     */
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param \DateTimeInterface|null $updatedAt
+     */
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
     }
 }
