@@ -2,6 +2,9 @@ security:
     encoders:
         App\Entity\Banker:
             algorithm: auto
+        App\Entity\Client:
+            algorithm: auto
+
 
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
@@ -10,6 +13,14 @@ security:
             entity:
                 class: App\Entity\Banker
                 property: email
+        app_client_provider:
+            entity:
+                class: App\Entity\Client
+                property: email
+        all_users:
+            chain:
+                providers: ['app_client_provider', 'app_user_provider']
+        # used to reload user from session & other features (e.g. switch_user)
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -17,7 +28,7 @@ security:
         main:
             anonymous: true
             lazy: true
-            provider: app_user_provider
+            provider: all_users
             guard:
                 authenticators:
                     - App\Security\LoginFormAuthenticator
@@ -35,5 +46,5 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/banker, roles: ROLE_BANKER }
+        - { path: ^/dashboard, roles: ROLE_CLIENT }

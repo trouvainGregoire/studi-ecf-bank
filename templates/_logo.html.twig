@@ -1,5 +1,5 @@
 <a class="toggleColour text-gray-800 no-underline hover:no-underline font-bold text-2xl lg:text-4xl"
-   href="{{path('home')}}">
+   href="{{ (is_granted('IS_AUTHENTICATED_REMEMBERED')) ? (is_granted('ROLE_CLIENT') ? path('client_dashboard') : path('banker_dashboard')) : path('home') }}">
     <svg  aria-hidden="true" focusable="false" data-prefix="fas" data-icon="university"
           class="svg-inline--fa fa-university fa-w-16 fill-current inline h-8" role="img" xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 512 512">
