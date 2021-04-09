@@ -1,0 +1,193 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un bénéficiaire - Bank'in{% endblock %}
+
+{% block javascripts %}
+    <script
+            src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
+            defer
+    ></script>
+    <script>
+        /**
+         * Limit focus to focusable elements inside `element`
+         * @param {HTMLElement} element - DOM element to focus trap inside
+         * @return {Function} cleanup function
+         */
+        function focusTrap(element) {
+            const focusableElements = getFocusableElements(element)
+            const firstFocusableEl = focusableElements[0]
+            const lastFocusableEl = focusableElements[focusableElements.length - 1]
+
+            // Wait for the case the element was not yet rendered
+            setTimeout(() => firstFocusableEl.focus(), 50)
+
+            /**
+             * Get all focusable elements inside `element`
+             * @param {HTMLElement} element - DOM element to focus trap inside
+             * @return {HTMLElement[]} List of focusable elements
+             */
+            function getFocusableElements(element = document) {
+                return [
+                    ...element.querySelectorAll(
+                        'a, button, details, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                    ),
+                ].filter((e) => !e.hasAttribute('disabled'))
+            }
+
+            function handleKeyDown(e) {
+                const TAB = 9
+                const isTab = e.key.toLowerCase() === 'tab' || e.keyCode === TAB
+
+                if (!isTab) return
+
+                if (e.shiftKey) {
+                    if (document.activeElement === firstFocusableEl) {
+                        lastFocusableEl.focus()
+                        e.preventDefault()
+                    }
+                } else {
+                    if (document.activeElement === lastFocusableEl) {
+                        firstFocusableEl.focus()
+                        e.preventDefault()
+                    }
+                }
+            }
+
+            element.addEventListener('keydown', handleKeyDown)
+
+            return function cleanup() {
+                element.removeEventListener('keydown', handleKeyDown)
+            }
+        }
+    </script>
+    <script>
+        function data() {
+            function getThemeFromLocalStorage() {
+                // if user already changed the theme, use it
+                if (window.localStorage.getItem('dark')) {
+                    return JSON.parse(window.localStorage.getItem('dark'))
+                }
+
+                // else return their preferences
+                return (
+                    !!window.matchMedia &&
+                    window.matchMedia('(prefers-color-scheme: dark)').matches
+                )
+            }
+
+            function setThemeToLocalStorage(value) {
+                window.localStorage.setItem('dark', value)
+            }
+
+            return {
+                dark: getThemeFromLocalStorage(),
+                toggleTheme() {
+                    this.dark = !this.dark
+                    setThemeToLocalStorage(this.dark)
+                },
+                isSideMenuOpen: false,
+                toggleSideMenu() {
+                    this.isSideMenuOpen = !this.isSideMenuOpen
+                },
+                closeSideMenu() {
+                    this.isSideMenuOpen = false
+                },
+                isNotificationsMenuOpen: false,
+                toggleNotificationsMenu() {
+                    this.isNotificationsMenuOpen = !this.isNotificationsMenuOpen
+                },
+                closeNotificationsMenu() {
+                    this.isNotificationsMenuOpen = false
+                },
+                isProfileMenuOpen: false,
+                toggleProfileMenu() {
+                    this.isProfileMenuOpen = !this.isProfileMenuOpen
+                },
+                closeProfileMenu() {
+                    this.isProfileMenuOpen = false
+                },
+                isPagesMenuOpen: false,
+                togglePagesMenu() {
+                    this.isPagesMenuOpen = !this.isPagesMenuOpen
+                },
+                // Modal
+                isModalOpen: false,
+                trapCleanup: null,
+                openModal() {
+                    this.isModalOpen = true
+                    this.trapCleanup = focusTrap(document.querySelector('#modal'))
+                },
+                closeModal() {
+                    this.isModalOpen = false
+                    this.trapCleanup()
+                },
+            }
+        }
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div
+            class="flex h-screen bg-gray-50 dark:bg-gray-900"
+            :class="{ 'overflow-hidden': isSideMenuOpen }"
+    >
+        {{ include('client_dashboard/_sidebard.html.twig') }}
+        <div
+                x-show="isSideMenuOpen"
+                x-transition:enter="transition ease-in-out duration-150"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition ease-in-out duration-150"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="fixed inset-0 z-10 flex items-end bg-black bg-opacity-50 sm:items-center sm:justify-center"
+        ></div>
+        {{ include('client_dashboard/_mobile_sidebard.html.twig') }}
+        <div class="flex flex-col flex-1 w-full">
+            {{ include('client_dashboard/_header.html.twig') }}
+            <main class="h-full overflow-y-auto">
+                <div class="container px-6 mx-auto grid">
+                    <h2
+                            class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
+                    >
+                        Ajouter un nouveau bénéficiaire
+                    </h2>
+
+
+                    <p class="p-1 text-gray-700">Cet espace vous permet d'ajouter un nouveau bénéficiaire à votre compte.</p>
+                    <p class="p-1 text-gray-700">Votre banquier devra valider son ajout.</p>
+
+                    {% set formErrors = form.vars.errors.form.getErrors(true) %}
+                    {% if formErrors|length %}
+                        {{ include('register/_error.html.twig') }}
+                    {% endif %}
+
+                    {{ form_start(form, {'action': path('client_create_recipient')}) }}
+                    <div class="flex flex-col pt-3 md:pt-8">
+                        <div class="flex flex-col pt-4">
+                            <label for="name" class="text-lg">Nom</label>
+                            {{ form_widget(form.name, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline',
+                                'placeholder': 'Smith'}}) }}
+                        </div>
+                        <div class="flex flex-col pt-4">
+                            <label for="name" class="text-lg">Prénom</label>
+                            {{ form_widget(form.firstname, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline',
+                                'placeholder': 'John'}}) }}
+                        </div>
+                        <div class="flex flex-col pt-4">
+                            <label for="name" class="text-lg">Numéro de compte bancaire</label>
+                            {{ form_widget(form.accountIdentifier, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline',
+                                'placeholder': 'BKXXXXXX'}}) }}
+                        </div>
+
+
+                        {{ form_widget(form.save, {'attr': {'class': 'gradient text-white font-bold text-lg hover:bg-gray-700 p-2 mt-8 cursor-pointer'}}) }}
+                    </div>
+
+                    {{ form_end(form) }}
+
+                </div>
+            </main>
+        </div>
+    </div>
+{% endblock %}

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ClientRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -107,6 +109,16 @@ class Client implements UserInterface
      * @ORM\ManyToOne(targetEntity=Banker::class, inversedBy="clients")
      */
     private $banker;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Recipient::class, mappedBy="client")
+     */
+    private $recipients;
+
+    public function __construct()
+    {
+        $this->recipients = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -320,6 +332,36 @@ class Client implements UserInterface
     public function setBanker(?Banker $banker): self
     {
         $this->banker = $banker;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Recipient[]
+     */
+    public function getRecipients(): Collection
+    {
+        return $this->recipients;
+    }
+
+    public function addRecipient(Recipient $recipient): self
+    {
+        if (!$this->recipients->contains($recipient)) {
+            $this->recipients[] = $recipient;
+            $recipient->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRecipient(Recipient $recipient): self
+    {
+        if ($this->recipients->removeElement($recipient)) {
+            // set the owning side to null (unless already changed)
+            if ($recipient->getClient() === $this) {
+                $recipient->setClient(null);
+            }
+        }
 
         return $this;
     }
