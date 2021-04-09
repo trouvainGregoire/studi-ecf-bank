@@ -13,8 +13,15 @@ class ClientDashboardController extends AbstractController
      */
     public function index(): Response
     {
+
+        /** @var \App\Entity\Client $client */
+        $client = $this->getUser();
+
+        $isPendingAccount = $client->getAccount()->getStatus() === 'pending';
+
         return $this->render('client_dashboard/index.html.twig', [
-            'controller_name' => 'ClientDashboardController',
+            'message' => $isPendingAccount ? 'Votre compte est en attende de validation' : '',
+            'isPending' => $isPendingAccount
         ]);
     }
 }
