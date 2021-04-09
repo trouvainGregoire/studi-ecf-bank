@@ -21,7 +21,8 @@ class ClientDashboardController extends AbstractController
 
         return $this->render('client_dashboard/index.html.twig', [
             'message' => $isPendingAccount ? 'Votre compte est en attende de validation' : '',
-            'isPending' => $isPendingAccount
+            'isPending' => $isPendingAccount,
+            'client' => $client
         ]);
     }
 }
