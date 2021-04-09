@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Banker;
 use App\Entity\Client;
+use App\Entity\Recipient;
 use App\Service\BankerUtils;
+use App\Service\ClientUtils;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -18,7 +21,7 @@ class BankerDashboardController extends AbstractController
      */
     public function index(BankerUtils $bankerUtils): Response
     {
-        /** @var \App\Entity\Banker $banker */
+        /** @var Banker $banker */
         $banker = $this->getUser();
 
         $clients = $banker->getClients();
@@ -26,7 +29,8 @@ class BankerDashboardController extends AbstractController
         return $this->render('banker_dashboard/index.html.twig', [
             'clients' => $clients,
             'pendingAccounts' => $bankerUtils->getPendingAccounts($banker),
-            'activatedClients' => $bankerUtils->getActivatedAccounts($banker)
+            'activatedClients' => $bankerUtils->getActivatedAccounts($banker),
+            'pendingRecipients' => $bankerUtils->getPendingRecipients($banker)
         ]);
     }
 
@@ -35,12 +39,12 @@ class BankerDashboardController extends AbstractController
      */
     public function showPendingAccounts(Request $request, BankerUtils $bankerUtils): Response
     {
-        /** @var \App\Entity\Banker $banker */
+        /** @var Banker $banker */
         $banker = $this->getUser();
 
         $formCollection = [];
 
-        foreach ($bankerUtils->getPendingAccounts($banker) as $client){
+        foreach ($bankerUtils->getPendingAccounts($banker) as $client) {
             $form = $this->createFormBuilder()
                 ->add('clientId', HiddenType::class)
                 ->add('save', SubmitType::class, ['label' => 'Valider'])
@@ -48,13 +52,13 @@ class BankerDashboardController extends AbstractController
             array_push($formCollection, $form);
         }
 
-        foreach ($formCollection as $form){
+        foreach ($formCollection as $form) {
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 $clientId = $form->get('clientId')->getData();
                 $client = $this->getDoctrine()->getRepository(Client::class)->find($clientId);
 
-                if(!$client){
+                if (!$client) {
                     throw $this->createNotFoundException('No client found for id' . $clientId);
                 }
 
@@ -64,12 +68,56 @@ class BankerDashboardController extends AbstractController
 
         $formViewCollection = [];
 
-        foreach ($formCollection as $form){
+        foreach ($formCollection as $form) {
             array_push($formViewCollection, $form->createView());
         }
 
         return $this->render('banker_dashboard/show_pending_accounts.html.twig', [
             'pendingAccounts' => $bankerUtils->getPendingAccounts($banker),
+            'forms' => $formViewCollection
+        ]);
+    }
+
+    /**
+     * @Route("/banker/pending-recipients", name="banker_pending_recipients")
+     */
+    public function showPendingRecipients(Request $request, BankerUtils $bankerUtils): Response
+    {
+        /** @var Banker $banker */
+        $banker = $this->getUser();
+
+        $formCollection = [];
+
+        foreach ($bankerUtils->getPendingRecipients($banker) as $recipient) {
+            $form = $this->createFormBuilder()
+                ->add('recipientId', HiddenType::class)
+                ->add('save', SubmitType::class, ['label' => 'Valider'])
+                ->getForm();
+            array_push($formCollection, $form);
+        }
+
+        foreach ($formCollection as $form) {
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $recipientId = $form->get('recipientId')->getData();
+                $recipient = $this->getDoctrine()->getRepository(Recipient::class)->find($recipientId);
+
+                if (!$recipient) {
+                    throw $this->createNotFoundException('No recipient found for id' . $recipientId);
+                }
+
+                $bankerUtils->validateRecipient($recipient);
+            }
+        }
+
+        $formViewCollection = [];
+
+        foreach ($formCollection as $form) {
+            array_push($formViewCollection, $form->createView());
+        }
+
+        return $this->render('banker_dashboard/show_pending_recipients.html.twig', [
+            'pendingRecipients' => $bankerUtils->getPendingRecipients($banker),
             'forms' => $formViewCollection
         ]);
     }

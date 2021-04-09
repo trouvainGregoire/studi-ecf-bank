@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\Banker;
 use App\Entity\Client;
+use App\Entity\Recipient;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -42,6 +43,15 @@ class BankerUtils
         return $pendingAccounts;
     }
 
+    public function validateRecipient(Recipient  $recipient)
+    {
+        $recipient
+            ->setStatus('activated');
+
+        $this->entityManager->persist($recipient);
+        $this->entityManager->flush();
+    }
+
     public function getActivatedAccounts(Banker $banker): array
     {
         $clients = $banker->getClients();
@@ -57,9 +67,26 @@ class BankerUtils
         return $activatedAccounts;
     }
 
+    public function getPendingRecipients(Banker $banker): array
+    {
+        $clients = $banker->getClients();
+
+        $pendingRecipients = [];
+
+        foreach ($clients as $client) {
+            foreach ($client->getRecipients() as $recipient){
+                if($recipient->getStatus() === 'pending'){
+                    array_push($pendingRecipients, $recipient);
+                }
+            }
+        }
+
+        return $pendingRecipients;
+    }
+
+
     public function validateAccount(Client $client)
     {
-
         $cleanNumber = preg_replace( '/[^0-9]/', '', microtime(false) );
         $id = base_convert($cleanNumber, 10, 36);
 

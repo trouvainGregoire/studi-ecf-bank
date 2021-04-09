@@ -38,4 +38,17 @@ class ClientUtils
 
         return $activatedRecipients;
     }
+
+    public function getPendingRecipients(Client $client): array
+    {
+        $pendingRecipients = [];
+
+        foreach ($client->getRecipients() as $recipient) {
+            if ($recipient->getStatus() === 'pending') {
+                array_push($pendingRecipients, $recipient);
+            }
+        }
+
+        return $pendingRecipients;
+    }
 }
