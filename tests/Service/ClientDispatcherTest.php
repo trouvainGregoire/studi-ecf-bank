@@ -126,6 +126,45 @@ class ClientDispatcherTest extends KernelTestCase
         $this->assertEquals('banker-0@bankin.net', $resultBanker->getEmail());
     }
 
+    public function testDispatchWithTwoClients(){
+        $this->createBankers();
+
+        for($i = 0; $i <= 2; $i++){
+            $client = new Client();
+            $email = 'client-' . $i .'@bankin.net';
+            $client->setEmail($email)
+                ->setPassword('12345')
+                ->setName('Name-' . $i)
+                ->setFirstname('First-')
+                ->setBirthdate(new \DateTimeImmutable())
+                ->setAddress('5 rue du midi')
+                ->setZipcode(75015);
+            $account = new Account();
+            $account->setStatus('pending');
+            $client->setAccount($account);
+
+            $this->entityManager->persist($client);
+        }
+
+        $this->entityManager->flush();
+
+        $clients = $this->entityManager->getRepository(Client::class)->findAll();
+
+        $clientDispatcher = new ClientDispatcher($this->entityManager);
+        $clientDispatcher->dispatch($clients[0]);
+
+        $resultUser = $this->entityManager->getRepository(Client::class)->findOneBy(['email' => 'client-0@bankin.net']);
+        $resultBanker = $resultUser->getBanker();
+
+        $this->assertEquals('banker-0@bankin.net', $resultBanker->getEmail());
+
+        $clientDispatcher->dispatch($clients[1]);
+
+        $resultUser = $this->entityManager->getRepository(Client::class)->findOneBy(['email' => 'client-1@bankin.net']);
+        $resultBanker = $resultUser->getBanker();
+        $this->assertNotEquals('banker-0@bankin.net', $resultBanker->getEmail());
+    }
+
     protected function tearDown(): void
     {
         parent::tearDown();
