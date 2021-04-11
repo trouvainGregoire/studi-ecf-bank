@@ -8,7 +8,6 @@ use App\Entity\Banker;
 use App\Entity\Client;
 use App\Entity\Recipient;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\Security;
 
 class BankerUtils
 {
@@ -17,15 +16,9 @@ class BankerUtils
      */
     private $entityManager;
 
-    /**
-     * @var Security
-     */
-    private $security;
-
-    public function __construct(EntityManagerInterface $entityManager, Security $security)
+    public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->security = $security;
     }
 
     public function getPendingAccounts(Banker $banker): array

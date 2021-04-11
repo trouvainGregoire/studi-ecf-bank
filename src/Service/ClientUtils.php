@@ -15,15 +15,10 @@ class ClientUtils
      */
     private $entityManager;
 
-    /**
-     * @var Security
-     */
-    private $security;
 
-    public function __construct(EntityManagerInterface $entityManager, Security $security)
+    public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->security = $security;
     }
 
     public function getActivatedRecipients(Client $client): array
