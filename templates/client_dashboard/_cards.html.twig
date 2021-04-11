@@ -1,0 +1,51 @@
+<div class="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
+    <!-- Card -->
+    <div
+            class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
+    >
+        <div
+                class="p-3 mr-4 text-green-500 bg-green-100 rounded-full dark:text-green-100 dark:bg-green-500"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+        </div>
+        <div>
+            <p
+                    class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
+            >
+                Solde du compte
+            </p>
+            <p
+                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
+            >
+                {{ client.account.balance}} €
+            </p>
+        </div>
+    </div>
+
+    <!-- Card -->
+    <div
+            class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
+    >
+        <div
+                class="p-3 mr-4 text-teal-500 bg-teal-100 rounded-full dark:text-teal-100 dark:bg-teal-500"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+            </svg>
+        </div>
+        <div>
+            <p
+                    class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
+            >
+                Numéro du compte
+            </p>
+            <p
+                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
+            >
+                {{ client.account.identifier }}
+            </p>
+        </div>
+    </div>
+</div>

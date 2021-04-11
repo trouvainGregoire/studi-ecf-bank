@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+    <section class="bg-white font-family-karla h-screen">
+        <div class="w-full flex flex-wrap">
+
+            <div class="w-full md:w-1/2 flex flex-col">
+
+                <div class="flex justify-center md:justify-start pt-12 md:pl-12 md:-mb-12">
+                    {{ include('_logo.html.twig') }}
+                </div>
+
+                <div class="flex flex-col justify-center md:justify-start my-auto pt-8 md:pt-0 px-8 md:px-24 lg:px-32">
+                    <p class="text-center text-3xl md:pt-40">Rejoignez-nous, <strong>150€ offert</strong> à la création de votre
+                        compte !</p>
+                    {% set formErrors = form.vars.errors.form.getErrors(true) %}
+                    {% if formErrors|length %}
+                        {{ include('register/_error.html.twig') }}
+                    {% endif %}
+                    {{ form_start(form, {'action': path('register')}) }}
+                    <div class="flex flex-col pt-3 md:pt-8">
+                        <div class="flex flex-col pt-4">
+                            <label for="name" class="text-lg">Nom</label>
+                            {{ form_widget(form.name, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline',
+                                'placeholder': 'Smith'}}) }}
+                        </div>
+                        <div class="flex flex-col pt-4">
+                            <label for="name" class="text-lg">Prénom</label>
+                            {{ form_widget(form.firstname, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline',
+                                'placeholder': 'John'}}) }}
+                        </div>
+
+                        <div class="flex flex-col pt-4">
+                            <label for="name" class="text-lg">Date de naissance</label>
+                            {{ form_widget(form.birthdate, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline',
+                            }}) }}
+                        </div>
+
+                        <div class="flex flex-col pt-4">
+                            <label for="name" class="text-lg">Adresse</label>
+                            {{ form_widget(form.address, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline',
+                                'placeholder': '5 rue du paradis'}}) }}
+                        </div>
+
+                        <div class="flex flex-col pt-4">
+                            <label for="name" class="text-lg">Code postal</label>
+                            {{ form_widget(form.zipcode, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline',
+                                'placeholder': '75015'}}) }}
+                        </div>
+
+                        <div class="flex flex-col pt-4">
+                            <label for="email" class="text-lg">Email</label>
+                            {{ form_widget(form.email, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline',
+                                'placeholder': 'your@email.com'}}) }}
+                        </div>
+
+                        <div class="flex flex-col pt-4">
+                            <label for="password" class="text-lg">Mot de passe</label>
+
+                            {{ form_widget(form.password, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline',
+                                'placeholder': 'Password'
+                            }}) }}
+
+                        </div>
+
+                        <div class="flex flex-col pt-4">
+                            <label for="email" class="text-lg">Carte d'identité</label>
+                            {{ form_widget(form.idCarFile, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline',
+                                }}) }}
+                        </div>
+
+                        {{ form_widget(form.save, {'attr': {'class': 'gradient text-white font-bold text-lg hover:bg-gray-700 p-2 mt-8 cursor-pointer'}}) }}
+                    </div>
+
+                    {{ form_end(form) }}
+                    <div class="text-center pt-12 pb-12">
+                        <p>Vous avez déjà un compte ? <a href="{{ path('app_login') }}" class="underline font-semibold">Connectez-vous
+                                ici</a></p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Image Section -->
+            <div class="w-1/2 shadow-2xl">
+                <img class="object-cover w-full h-screen hidden md:block" alt=""
+                     src="{{ asset('build/building.jpeg') }}">
+            </div>
+        </div>
+
+    </section>
+{% endblock %}

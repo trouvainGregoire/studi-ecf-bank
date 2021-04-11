@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Bank'in - Administration{% endblock %}
+{% block title %}Bank'in - Bénéficiaires en attente de validation{% endblock %}
 
 {% block javascripts %}
     <script
@@ -150,13 +150,12 @@
                     <h2
                             class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
                     >
-                        Tableau de bord
+                        Bénéficiaires en attente de validation
                     </h2>
-                    <!-- Cards -->
-                    {{ include('banker_dashboard/_cards.html.twig') }}
+                    <p class="p-1 text-gray-700">Cet espace vous permet de valider les bénéficiaires de vos clients qui sont en attente de validation.</p>
 
                     <!-- New Table -->
-                    <div class="w-full overflow-hidden rounded-lg shadow-xs">
+                    <div class="w-full overflow-hidden rounded-lg shadow-xs mt-4">
                         <div class="w-full overflow-x-auto">
                             <table class="w-full whitespace-no-wrap">
                                 <thead>
@@ -164,13 +163,15 @@
                                         class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                                 >
                                     <th class="px-4 py-3">Client</th>
-                                    <th class="px-4 py-3">Solde du compte bancaire</th>
+                                    <th class="px-4 py-3">Bénéficiaire</th>
+                                    <th class="px-4 py-3">Action</th>
                                 </tr>
                                 </thead>
                                 <tbody
                                         class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
                                 >
-                                {% for key, client in activatedClients %}
+
+                                {% for key, recipient in pendingRecipients %}
 
                                     <tr class="text-gray-700 dark:text-gray-400">
                                         <td class="py-3">
@@ -181,17 +182,25 @@
                                                 >
                                                 </div>
                                                 <div>
-                                                    <p class="font-semibold">{{ client.name }} {{ client.firstname }}</p>
+                                                    <p class="font-semibold">{{ recipient.client.name}} {{ recipient.client.firstname }}</p>
                                                     <p class="text-xs text-gray-600 dark:text-gray-400">
-                                                        {{ client.email }}
+                                                        {{ recipient.client.email }}
                                                     </p>
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="px-4 py-3 text-sm">
-                                            {{ client.account.balance }} €
+                                            {{ recipient.name }}, {{ recipient.firstname }}
+                                        </td>
+                                        <td class="px-4 py-3 text-sm">
+                                            {{ form_start(forms[key], {'action': path('banker_pending_recipients')}) }}
+                                            {{ form_widget(forms[key].recipientId, {'value': recipient.id}) }}
+                                            {{ form_widget(forms[key].save, {'attr': {'class': 'relative bg-green-500 text-white p-1 rounded text-sm font-bold overflow-hidden'}}) }}
+
+                                            {{ form_end(forms[key]) }}
                                         </td>
                                     </tr>
+
                                 {% endfor %}
                                 </tbody>
                             </table>

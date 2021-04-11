@@ -3,6 +3,7 @@
 namespace App\Security;
 
 use App\Entity\Banker;
+use App\Entity\Client;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -67,14 +68,20 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
             throw new InvalidCsrfTokenException();
         }
 
-        $user = $this->entityManager->getRepository(Banker::class)->findOneBy(['email' => $credentials['email']]);
+        $user = $this->entityManager->getRepository(Client::class)->findOneBy(['email' => $credentials['email']]);
 
-        if (!$user) {
+        if($user){
+            return $user;
+        }
+
+        $banker = $this->entityManager->getRepository(Banker::class)->findOneBy(['email' => $credentials['email']]);
+
+        if (!$banker) {
             // fail authentication with a custom error
             throw new CustomUserMessageAuthenticationException('Email could not be found.');
         }
 
-        return $user;
+        return $banker;
     }
 
     public function checkCredentials($credentials, UserInterface $user)
@@ -94,6 +101,10 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
     {
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);
+        }
+
+        if(in_array('ROLE_CLIENT', $token->getRoleNames())){
+            return new RedirectResponse($this->urlGenerator->generate('client_dashboard'));
         }
 
         return new RedirectResponse($this->urlGenerator->generate('banker_dashboard'));

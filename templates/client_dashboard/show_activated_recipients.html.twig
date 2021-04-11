@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Bank'in - Administration{% endblock %}
+{% block title %}Vos bénéficiaires - Bank'in{% endblock %}
 
 {% block javascripts %}
     <script
@@ -131,7 +131,7 @@
             class="flex h-screen bg-gray-50 dark:bg-gray-900"
             :class="{ 'overflow-hidden': isSideMenuOpen }"
     >
-        {{ include('banker_dashboard/_sidebard.html.twig') }}
+        {{ include('client_dashboard/_sidebard.html.twig') }}
         <div
                 x-show="isSideMenuOpen"
                 x-transition:enter="transition ease-in-out duration-150"
@@ -142,61 +142,73 @@
                 x-transition:leave-end="opacity-0"
                 class="fixed inset-0 z-10 flex items-end bg-black bg-opacity-50 sm:items-center sm:justify-center"
         ></div>
-        {{ include('banker_dashboard/_mobile_sidebard.html.twig') }}
+        {{ include('client_dashboard/_mobile_sidebard.html.twig') }}
         <div class="flex flex-col flex-1 w-full">
-            {{ include('banker_dashboard/_header.html.twig') }}
+            {{ include('client_dashboard/_header.html.twig') }}
             <main class="h-full overflow-y-auto">
                 <div class="container px-6 mx-auto grid">
                     <h2
                             class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
                     >
-                        Tableau de bord
+                        Mes bénéficiaires
                     </h2>
-                    <!-- Cards -->
-                    {{ include('banker_dashboard/_cards.html.twig') }}
+
+
+                    <p class="p-1 text-gray-700">Cet espace vous permet de voir l'ensemble de vos bénéficiaires ainsi que leur statut.</p>
+
+                    <p class="mt-4">
+                        <a class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded" href="{{ path('client_create_recipient') }}">Ajouter un nouveau bénéficiaire</a>
+                    </p>
+
 
                     <!-- New Table -->
-                    <div class="w-full overflow-hidden rounded-lg shadow-xs">
+                    <div class="w-full overflow-hidden rounded-lg shadow-xs mt-5">
                         <div class="w-full overflow-x-auto">
                             <table class="w-full whitespace-no-wrap">
                                 <thead>
                                 <tr
                                         class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                                 >
-                                    <th class="px-4 py-3">Client</th>
-                                    <th class="px-4 py-3">Solde du compte bancaire</th>
+                                    <th class="px-4 py-3">Nom</th>
+                                    <th class="px-4 py-3">Prénom</th>
+                                    <th class="px-4 py-3">Statut</th>
+                                    <th class="px-4 py-3">Numéro de compte</th>
                                 </tr>
                                 </thead>
                                 <tbody
                                         class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
                                 >
-                                {% for key, client in activatedClients %}
 
+                                {% for recipient in recipients %}
                                     <tr class="text-gray-700 dark:text-gray-400">
-                                        <td class="py-3">
+                                        <td class="px-4 py-3">
                                             <div class="flex items-center text-sm">
-                                                <!-- Avatar with inset shadow -->
-                                                <div
-                                                        class="relative hidden w-8 h-8 rounded-full md:block"
-                                                >
-                                                </div>
                                                 <div>
-                                                    <p class="font-semibold">{{ client.name }} {{ client.firstname }}</p>
-                                                    <p class="text-xs text-gray-600 dark:text-gray-400">
-                                                        {{ client.email }}
-                                                    </p>
+                                                    <p class="font-semibold">{{ recipient.name }}</p>
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="px-4 py-3 text-sm">
-                                            {{ client.account.balance }} €
+                                            {{ recipient.firstname }}
+                                        </td>
+                                        <td class="px-4 py-3 text-xs">
+                        <span
+                                class="px-2 py-1 font-semibold leading-tight {{ recipient.status is same as 'pending' ? 'text-yellow-700 bg-yellow-100' : 'text-green-700 bg-green-100' }}  rounded-full dark:bg-green-700 dark:text-green-100"
+                        >
+                          {{ recipient.status is same as 'pending' ? 'en attente de validation' : 'actif' }}
+                        </span>
+                                        </td>
+                                        <td class="px-4 py-3 text-sm">
+                                            {{ recipient.accountIdentifier }}
                                         </td>
                                     </tr>
                                 {% endfor %}
+
                                 </tbody>
                             </table>
                         </div>
                     </div>
+
                 </div>
             </main>
         </div>
