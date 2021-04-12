@@ -4,10 +4,15 @@ namespace App\Controller;
 
 use App\Entity\Client;
 use App\Entity\Recipient;
+use App\Entity\Transaction;
 use App\Form\ClientType;
 use App\Form\RecipientType;
+use App\Form\TransactionType;
+use App\Service\BankUtils;
 use App\Service\ClientUtils;
+use LogicException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,7 +25,7 @@ class ClientDashboardController extends AbstractController
     public function index(): Response
     {
 
-        /** @var \App\Entity\Client $client */
+        /** @var Client $client */
         $client = $this->getUser();
 
         $isPendingAccount = $client->getAccount()->getStatus() === 'pending';
@@ -37,7 +42,7 @@ class ClientDashboardController extends AbstractController
      */
     public function showActivatedRecipients(): Response
     {
-        /** @var \App\Entity\Client $client */
+        /** @var Client $client */
         $client = $this->getUser();
 
         return $this->render('client_dashboard/show_activated_recipients.html.twig', [
@@ -47,11 +52,49 @@ class ClientDashboardController extends AbstractController
     }
 
     /**
+     * @Route("/dashboard/create-transaction", name="client_create_transaction")
+     */
+    public function createTransaction(Request $request, BankUtils $bankUtils): Response
+    {
+        /** @var Client $client */
+        $client = $this->getUser();
+
+        $transaction = new Transaction();
+
+        $form = $this->createForm(TransactionType::class, $transaction);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $recipient = $form->get('recipient')->getData();
+
+            try {
+                $bankUtils->makeTransaction($client, $transaction, $recipient);
+            } catch (LogicException $exception) {
+                $form->addError(new FormError($exception->getMessage()));
+                return $this->render('client_dashboard/create_transaction.html.twig', [
+                    'recipients' => $client->getRecipients(),
+                    'isPending' => $client->getAccount()->getStatus() === 'pending',
+                    'form' => $form->createView()
+                ]);
+            }
+
+            return $this->redirectToRoute('client_dashboard');
+        }
+
+        return $this->render('client_dashboard/create_transaction.html.twig', [
+            'recipients' => $client->getRecipients(),
+            'isPending' => $client->getAccount()->getStatus() === 'pending',
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
      * @Route("/dashboard/create-recipient", name="client_create_recipient")
      */
     public function createRecipient(Request $request): Response
     {
-        /** @var \App\Entity\Client $client */
+        /** @var Client $client */
         $client = $this->getUser();
 
         $recipient = new Recipient();
@@ -60,7 +103,7 @@ class ClientDashboardController extends AbstractController
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $recipient->setClient($client);
 
             $entityManager = $this->getDoctrine()->getManager();

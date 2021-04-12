@@ -118,4 +118,9 @@ class Recipient
 
         return $this;
     }
+
+    public function getFullName(): string
+    {
+        return $this->getName() . ' ' . $this->getFirstname();
+    }
 }
