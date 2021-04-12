@@ -4,9 +4,11 @@ namespace App\Entity;
 
 use App\Repository\TransactionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=TransactionRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
 class Transaction
 {
@@ -24,6 +26,7 @@ class Transaction
 
     /**
      * @ORM\Column(type="float")
+     * @Assert\Positive
      */
     private $amount;
 
@@ -32,6 +35,23 @@ class Transaction
      * @ORM\JoinColumn(nullable=false)
      */
     private $account;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(max=255)
+     */
+    private $description;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+    public function __construct()
+    {
+        $this->setType('credit');
+        $this->setAmount(0);
+    }
 
     public function getId(): ?int
     {
@@ -72,5 +92,30 @@ class Transaction
         $this->account = $account;
 
         return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setCreatedAt()
+    {
+        $this->createdAt = new \DateTime();
     }
 }

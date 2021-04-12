@@ -46,9 +46,15 @@
         {% if isPending == false %}
             <ul>
                 <li class="relative px-6 py-3">
+                    {% if current_path is same as 'client_create_transaction' %}
+                        <span
+                                class="absolute inset-y-0 left-0 w-1 bg-blue-600 rounded-tr-lg rounded-br-lg"
+                                aria-hidden="true"
+                        ></span>
+                    {% endif %}
                     <a
-                            class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                            href="forms.html"
+                            class="inline-flex items-center w-full text-sm font-semibold {{ current_path is same as 'client_create_transaction' ? 'text-gray-800' : '' }} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                            href="{{ path('client_create_transaction') }}"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg"  stroke-linejoin="round"
                              stroke-width="2" class="w-5 h-5" fill="none" viewBox="0 0 24 24"

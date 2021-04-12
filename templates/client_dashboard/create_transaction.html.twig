@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Votre espace - Bank'in{% endblock %}
+{% block title %}Ajouter un bénéficiaire - Bank'in{% endblock %}
 
 {% block javascripts %}
     <script
@@ -150,70 +150,43 @@
                     <h2
                             class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
                     >
-                        Tableau de bord
+                        Faire un virement
                     </h2>
 
-                    {% if message is not empty %}
-                        {{ include('client_dashboard/_message.html.twig') }}
+
+                    <p class="p-1 text-gray-700">Cet espace vous permet de faire un virement de votre compte à un de vos
+                        bénéficiaires.</p>
+                    <p class="p-1 text-gray-700">Sous réserve de fonds nécessaires.</p>
+
+                    {% set formErrors = form.vars.errors.form.getErrors(true) %}
+                    {% if formErrors|length %}
+                        {{ include('register/_error.html.twig') }}
                     {% endif %}
 
-
-                    <!-- Cards -->
-
-                    {% if isPending == false %}
-                        {{ include('client_dashboard/_cards.html.twig') }}
-
-                        <!-- New Table -->
-                        <div class="w-full overflow-hidden rounded-lg shadow-xs">
-                            <div class="w-full overflow-x-auto">
-                                <table class="w-full whitespace-no-wrap">
-                                    <thead>
-                                    <tr
-                                            class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
-                                    >
-                                        <th class="px-4 py-3">Date</th>
-                                        <th class="px-4 py-3">Description</th>
-                                        <th class="px-4 py-3">Montant</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody
-                                            class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
-                                    >
-
-                                    {% for transaction in client.account.transactions|reverse %}
-
-                                        <tr class="text-gray-700 dark:text-gray-400">
-                                            <td class="px-4 py-3">
-                                                <div class="flex items-center text-sm">
-                                                    <!-- Avatar with inset shadow -->
-                                                    <div>
-                                                        <p class="font-semibold">{{ transaction.createdAt|date('d/m/y à H:i', 'Europe/Paris') }}</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="px-4 py-3 text-sm">
-                                                {% if transaction.description is empty %}
-                                                Virement {{ transaction.type == 'credit' ? 'reçu' : 'émis' }}
-                                                {% else %}
-                                                    {{ transaction.description }}
-                                                {% endif %}
-                                            </td>
-                                            <td class="px-4 py-3 text-xs">
-                        <span
-                                class="px-2 py-1 font-semibold leading-tight {{ transaction.type == 'credit' ? 'text-green-700 bg-green-100' : 'text-red-700 bg-red-100' }} rounded-full dark:bg-green-700 dark:text-green-100"
-                        >
-                            {{ transaction.type == 'credit' ? '+' : '-' }} {{ transaction.amount }} €
-                        </span>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-
-
-                                    </tbody>
-                                </table>
-                            </div>
+                    {{ form_start(form, {'action': path('client_create_transaction')}) }}
+                    <div class="flex flex-col pt-3 md:pt-8">
+                        <div class="flex flex-col pt-4">
+                            <label for="transaction_description" class="text-lg">Bénéficiaire</label>
+                            {{ form_widget(form.recipient, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline',
+                            }}) }}
                         </div>
-                    {% endif %}
+                        <div class="flex flex-col pt-4">
+                            <label for="transaction_description" class="text-lg">Description</label>
+                            <em class="text-gray-500 mb-2">(optionnel)</em>
+                            {{ form_widget(form.description, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline',
+                                'placeholder': 'Participation cadeau'}}) }}
+                        </div>
+                        <div class="flex flex-col pt-4">
+                            <label for="transaction_amount" class="text-lg">Montant</label>
+                            <em class="text-gray-500 mb-2">(en €)</em>
+                            {{ form_widget(form.amount, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline',
+                                'placeholder': '15.5'}}) }}
+                        </div>
+
+                        {{ form_widget(form.save, {'attr': {'class': 'gradient text-white font-bold text-lg hover:bg-gray-700 p-2 mt-8 cursor-pointer'}}) }}
+                    </div>
+
+                    {{ form_end(form) }}
 
                 </div>
             </main>
