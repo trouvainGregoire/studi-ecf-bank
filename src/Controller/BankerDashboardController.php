@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Account;
 use App\Entity\Banker;
 use App\Entity\Client;
 use App\Entity\Recipient;
 use App\Service\BankerUtils;
-use App\Service\ClientUtils;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -30,7 +30,8 @@ class BankerDashboardController extends AbstractController
             'clients' => $clients,
             'pendingAccounts' => $bankerUtils->getPendingAccounts($banker),
             'activatedClients' => $bankerUtils->getActivatedAccounts($banker),
-            'pendingRecipients' => $bankerUtils->getPendingRecipients($banker)
+            'pendingRecipients' => $bankerUtils->getPendingRecipients($banker),
+            'pendingRemovalAccounts' => $bankerUtils->getPendingRemovalAccounts($banker)
         ]);
     }
 
@@ -118,6 +119,50 @@ class BankerDashboardController extends AbstractController
 
         return $this->render('banker_dashboard/show_pending_recipients.html.twig', [
             'pendingRecipients' => $bankerUtils->getPendingRecipients($banker),
+            'forms' => $formViewCollection
+        ]);
+    }
+
+    /**
+     * @Route("/banker/pending-removal-accounts", name="banker_pending_removal_accounts")
+     */
+    public function showPendingRemovalAccount(Request $request, BankerUtils $bankerUtils): Response
+    {
+        /** @var Banker $banker */
+        $banker = $this->getUser();
+
+        $formCollection = [];
+
+        foreach ($bankerUtils->getPendingRemovalAccounts($banker) as $pendingRemovalAccount) {
+            $form = $this->createFormBuilder()
+                ->add('accountId', HiddenType::class)
+                ->add('save', SubmitType::class, ['label' => 'Supprimer'])
+                ->getForm();
+            array_push($formCollection, $form);
+        }
+
+        foreach ($formCollection as $form) {
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $accountId = $form->get('accountId')->getData();
+                $account = $this->getDoctrine()->getRepository(Account::class)->find($accountId);
+
+                if (!$account) {
+                    throw $this->createNotFoundException('No account found for id' . $accountId);
+                }
+
+                $bankerUtils->deleteAccount($account);
+            }
+        }
+
+        $formViewCollection = [];
+
+        foreach ($formCollection as $form) {
+            array_push($formViewCollection, $form->createView());
+        }
+
+        return $this->render('banker_dashboard/show_pending_removal_accounts.html.twig', [
+            'pendingRemovalAccounts' => $bankerUtils->getPendingRemovalAccounts($banker),
             'forms' => $formViewCollection
         ]);
     }

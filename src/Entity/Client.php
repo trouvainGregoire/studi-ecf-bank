@@ -111,7 +111,7 @@ class Client implements UserInterface
     private $banker;
 
     /**
-     * @ORM\OneToMany(targetEntity=Recipient::class, mappedBy="client")
+     * @ORM\OneToMany(targetEntity=Recipient::class, mappedBy="client", cascade={"remove"})
      */
     private $recipients;
 

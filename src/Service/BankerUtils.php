@@ -4,6 +4,7 @@
 namespace App\Service;
 
 
+use App\Entity\Account;
 use App\Entity\Banker;
 use App\Entity\Client;
 use App\Entity\Recipient;
@@ -36,7 +37,29 @@ class BankerUtils
         return $pendingAccounts;
     }
 
-    public function validateRecipient(Recipient  $recipient)
+    public function deleteAccount(Account $account)
+    {
+        $client = $account->getClient();
+        $this->entityManager->remove($client);
+        $this->entityManager->flush();
+    }
+
+    public function getPendingRemovalAccounts(Banker $banker): array
+    {
+        $clients = $banker->getClients();
+
+        $pendingRemovalAccounts = [];
+
+        foreach ($clients as $client) {
+            if ($client->getAccount()->getStatus() === 'pending-removal') {
+                array_push($pendingRemovalAccounts, $client);
+            }
+        }
+
+        return $pendingRemovalAccounts;
+    }
+
+    public function validateRecipient(Recipient $recipient)
     {
         $recipient
             ->setStatus('activated');
@@ -67,8 +90,8 @@ class BankerUtils
         $pendingRecipients = [];
 
         foreach ($clients as $client) {
-            foreach ($client->getRecipients() as $recipient){
-                if($recipient->getStatus() === 'pending'){
+            foreach ($client->getRecipients() as $recipient) {
+                if ($recipient->getStatus() === 'pending') {
                     array_push($pendingRecipients, $recipient);
                 }
             }
@@ -80,7 +103,7 @@ class BankerUtils
 
     public function validateAccount(Client $client)
     {
-        $cleanNumber = preg_replace( '/[^0-9]/', '', microtime(false) );
+        $cleanNumber = preg_replace('/[^0-9]/', '', microtime(false));
         $id = base_convert($cleanNumber, 10, 36);
 
         $account = $client->getAccount();
