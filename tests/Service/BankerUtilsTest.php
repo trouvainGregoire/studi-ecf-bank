@@ -178,6 +178,47 @@ class BankerUtilsTest extends KernelTestCase
         $this->assertEquals(0, count($bankerUtils->getPendingRecipients($clientAndBanker['banker'])));
     }
 
+    public function testGetPendingAccounts()
+    {
+        $this->createDataForTesting();
+
+        $this->generatePendingRemovalAccount();
+
+        $clientAndBanker = $this->getBankerAndClient();
+
+        $bankerUtils = new BankerUtils($this->entityManager);
+
+        $this->assertEquals(1, count($bankerUtils->getPendingRemovalAccounts($clientAndBanker['banker'])));
+    }
+
+    private function generatePendingRemovalAccount()
+    {
+        $clientAndBanker = $this->getBankerAndClient();
+
+        $client = $clientAndBanker['client'];
+
+        $client->getAccount()->setStatus('pending-removal');
+
+        $this->entityManager->persist($client);
+        $this->entityManager->flush();
+    }
+
+    public function testDeleteAccount()
+    {
+        $this->createDataForTesting();
+
+        $this->generatePendingRemovalAccount();
+
+        $clientAndBanker = $this->getBankerAndClient();
+
+        $bankerUtils = new BankerUtils($this->entityManager);
+
+        $bankerUtils->deleteAccount($clientAndBanker['client']->getAccount());
+
+        $deletedClient = $this->entityManager->getRepository(Client::class)->findOneBy(['email' => 'client@bankin.net']);
+        $this->assertNull($deletedClient);
+    }
+
     protected function tearDown(): void
     {
         parent::tearDown();

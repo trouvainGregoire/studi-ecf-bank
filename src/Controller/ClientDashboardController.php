@@ -5,11 +5,10 @@ namespace App\Controller;
 use App\Entity\Client;
 use App\Entity\Recipient;
 use App\Entity\Transaction;
-use App\Form\ClientType;
+use App\Form\DeleteAccountType;
 use App\Form\RecipientType;
 use App\Form\TransactionType;
 use App\Service\BankUtils;
-use App\Service\ClientUtils;
 use LogicException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -24,14 +23,21 @@ class ClientDashboardController extends AbstractController
      */
     public function index(): Response
     {
-
         /** @var Client $client */
         $client = $this->getUser();
 
         $isPendingAccount = $client->getAccount()->getStatus() === 'pending';
 
+        $message = '';
+
+        if ($isPendingAccount) {
+            $message = 'Votre compte est en attende de validation';
+        } elseif ($client->getAccount()->getStatus() === 'pending-removal') {
+            $message = 'Votre compte est en attende de suppression';
+        }
+
         return $this->render('client_dashboard/index.html.twig', [
-            'message' => $isPendingAccount ? 'Votre compte est en attende de validation' : '',
+            'message' => $message,
             'isPending' => $isPendingAccount,
             'client' => $client
         ]);
@@ -119,4 +125,33 @@ class ClientDashboardController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    /**
+     * @Route("/dashboard/delete-account", name="client_delete_account")
+     */
+    public function deleteAccount(Request $request, BankUtils $bankUtils): Response
+    {
+        /** @var Client $client */
+        $client = $this->getUser();
+
+        $account = $client->getAccount();
+
+        $form = $this->createForm(DeleteAccountType::class, $account);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $bankUtils->setPendingRemovalAccount($account);
+
+            return $this->redirectToRoute('client_dashboard');
+        }
+
+        return $this->render('client_dashboard/delete_account.html.twig', [
+            'recipients' => $client->getRecipients(),
+            'isPending' => $client->getAccount()->getStatus() === 'pending',
+            'form' => $form->createView(),
+        ]);
+    }
+
 }

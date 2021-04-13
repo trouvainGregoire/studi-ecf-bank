@@ -3,14 +3,23 @@
 namespace App\Entity;
 
 use App\Repository\AccountRepository;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
+use Serializable;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass=AccountRepository::class)
+ * @Vich\Uploadable
  */
-class Account
+class Account implements Serializable
 {
     /**
      * @ORM\Id
@@ -45,7 +54,29 @@ class Account
      */
     private $transactions;
 
-    public function __construct(){
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $idDeleteSignatureName;
+
+    /**
+     * @Vich\UploadableField(mapping="uploads", fileNameProperty="idDeleteSignatureName")
+     *
+     * @Assert\File(maxSize="5000k", mimeTypes={"application/pdf"}, mimeTypesMessage="Seul le format PDF est autorisé")
+     *
+     * @var File|null
+     */
+    private $idDeleteSignatureFile;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     *
+     * @var DateTimeInterface|null
+     */
+    private $updatedAt;
+
+    public function __construct()
+    {
         $this->setBalance(0);
         $this->setStatus('pending');
         $this->transactions = new ArrayCollection();
@@ -132,5 +163,87 @@ class Account
         }
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIdDeleteSignatureName(): ?string
+    {
+        return $this->idDeleteSignatureName;
+    }
+
+    /**
+     * @param mixed $idDeleteSignatureName
+     */
+    public function setIdDeleteSignatureName(?string $idDeleteSignatureName): void
+    {
+        $this->idDeleteSignatureName = $idDeleteSignatureName;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getIdDeleteSignatureFile(): ?File
+    {
+        return $this->idDeleteSignatureFile;
+    }
+
+    /**
+     * @param File|UploadedFile|null $idDeleteSignatureFile
+     */
+    public function setIdDeleteSignatureFile(?File $idDeleteSignatureFile = null): void
+    {
+        $this->idDeleteSignatureFile = $idDeleteSignatureFile;
+
+        if (null !== $idDeleteSignatureFile) {
+            $this->updatedAt = new DateTimeImmutable();
+        }
+    }
+
+    /**
+     * @return DateTimeInterface|null
+     */
+    public function getUpdatedAt(): ?DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param DateTimeInterface|null $updatedAt
+     */
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    public function serialize()
+    {
+        return serialize(
+            array(
+                $this->id,
+                $this->client,
+                $this->balance,
+                $this->identifier,
+                $this->status,
+                $this->transactions,
+                $this->idDeleteSignatureName,
+                $this->updatedAt
+            )
+        );
+    }
+
+    public function unserialize($data)
+    {
+        list(
+            $this->id,
+            $this->client,
+            $this->balance,
+            $this->identifier,
+            $this->status,
+            $this->transactions,
+            $this->idDeleteSignatureName,
+            $this->updatedAt
+            ) = unserialize($data);
     }
 }

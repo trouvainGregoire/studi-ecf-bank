@@ -64,4 +64,13 @@ class BankUtils
 
         $this->entityManager->flush();
     }
+
+    public function setPendingRemovalAccount(Account $account)
+    {
+        $account->setStatus('pending-removal');
+
+        $this->entityManager->persist($account);
+
+        $this->entityManager->flush();
+    }
 }
