@@ -53,6 +53,7 @@ class ClientDashboardController extends AbstractController
 
         return $this->render('client_dashboard/show_activated_recipients.html.twig', [
             'recipients' => $client->getRecipients(),
+            'client' => $client,
             'isPending' => $client->getAccount()->getStatus() === 'pending'
         ]);
     }
@@ -90,6 +91,7 @@ class ClientDashboardController extends AbstractController
 
         return $this->render('client_dashboard/create_transaction.html.twig', [
             'recipients' => $client->getRecipients(),
+            'client' => $client,
             'isPending' => $client->getAccount()->getStatus() === 'pending',
             'form' => $form->createView()
         ]);
@@ -121,6 +123,7 @@ class ClientDashboardController extends AbstractController
 
         return $this->render('client_dashboard/create_recipient.html.twig', [
             'recipients' => $client->getRecipients(),
+            'client' => $client,
             'isPending' => $client->getAccount()->getStatus() === 'pending',
             'form' => $form->createView(),
         ]);
@@ -149,6 +152,7 @@ class ClientDashboardController extends AbstractController
 
         return $this->render('client_dashboard/delete_account.html.twig', [
             'recipients' => $client->getRecipients(),
+            'client' => $client,
             'isPending' => $client->getAccount()->getStatus() === 'pending',
             'form' => $form->createView(),
         ]);

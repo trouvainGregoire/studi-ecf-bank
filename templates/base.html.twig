@@ -1,24 +1,32 @@
 <!DOCTYPE html>
 <html x-data="data()">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{% block title %}Bienvenue sur Bank'in votre future nouvelle banque{% endblock %}</title>
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-            {{ encore_entry_link_tags('tailwind') }}
-        {% endblock %}
+<head>
+    {% set current_path = app.request.get('_route') %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{% block title %}Bienvenue sur Bank'in votre future nouvelle banque{% endblock %}</title>
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+        {{ encore_entry_link_tags('tailwind') }}
+    {% endblock %}
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+    {% endblock %}
+    {% if needMenu(current_path) %}
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
+        {{ encore_entry_script_tags('menu') }}
+        <script
+                src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
+                defer
+        ></script>
+    {% endif %}
+</head>
+<body>
 
-        {% set current_path = app.request.get('_route') %}
-        {% if current_path is same as 'home' %}
-            {{ encore_entry_script_tags('home') }}
-        {% endif %}
-    </body>
+{% block body %}{% endblock %}
+
+{% if current_path is same as 'home' %}
+    {{ encore_entry_script_tags('home') }}
+{% endif %}
+</body>
 </html>
