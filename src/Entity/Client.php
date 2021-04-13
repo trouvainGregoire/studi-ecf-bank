@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator as BankAssert;
 
 /**
  * @ORM\Entity(repositoryClass=ClientRepository::class)
@@ -30,6 +31,7 @@ class Client implements UserInterface
      * @Assert\NotBlank
      * @Assert\Length(max=180)
      * @Assert\Email
+     * @BankAssert\IsUniqueEmail
      */
     private $email;
 
