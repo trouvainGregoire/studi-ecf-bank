@@ -146,6 +146,19 @@ class BankUtilsTest extends KernelTestCase
         $bankUtils->makeTransaction($client, $transaction, $recipient);
     }
 
+    public function testSetPendingRemovalAccount()
+    {
+        $this->createDataForTesting();
+
+        $bankUtils = new BankUtils($this->entityManager);
+
+        $client = $this->entityManager->getRepository(Client::class)->findOneBy(['email' => 'client@bankin.net']);
+
+        $bankUtils->setPendingRemovalAccount($client->getAccount());
+
+        $this->assertEquals('pending-removal', $client->getAccount()->getStatus());
+    }
+
 
     protected function tearDown(): void
     {
