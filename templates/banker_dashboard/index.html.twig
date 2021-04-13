@@ -34,7 +34,7 @@
                     <!-- New Table -->
                     <div class="w-full overflow-hidden rounded-lg shadow-xs">
                         <div class="w-full overflow-x-auto">
-                            <p class="text-gray-700 font-semibold ">Clients ayant un compte actif :</p>
+                            <p class="text-gray-700 font-semibold ">Vos clients ayant un compte actif :</p>
                             <em class="text-gray-500 text-sm">(ne liste pas les comptes en attente de validation ou de suppression)</em>
                             <table class="w-full whitespace-no-wrap mt-2">
                                 <thead>
@@ -42,12 +42,15 @@
                                         class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                                 >
                                     <th class="px-4 py-3">Client</th>
+                                    <th class="px-4 py-3">Numéro de compte bancaire</th>
                                     <th class="px-4 py-3">Solde du compte bancaire</th>
                                 </tr>
                                 </thead>
                                 <tbody
                                         class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
                                 >
+
+
                                 {% for key, client in activatedClients %}
 
                                     <tr class="text-gray-700 dark:text-gray-400">
@@ -67,12 +70,20 @@
                                             </div>
                                         </td>
                                         <td class="px-4 py-3 text-sm">
+                                            {{ client.account.identifier }}
+                                        </td>
+                                        <td class="px-4 py-3 text-sm">
                                             {{ client.account.balance }} €
                                         </td>
                                     </tr>
                                 {% endfor %}
+
+
                                 </tbody>
                             </table>
+                            {% if activatedClients is empty %}
+                                <p class="mt-2">Vous n'avez pas encore de client ayant un compte actif.</p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

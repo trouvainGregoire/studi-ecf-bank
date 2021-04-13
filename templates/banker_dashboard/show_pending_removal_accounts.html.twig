@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Bank'in - Comptes en attente de validation{% endblock %}
+{% block title %}Bank'in - Comptes en attente de suppression{% endblock %}
 
 {% block body %}
     <div
@@ -94,6 +94,9 @@
                                 {% endfor %}
                                 </tbody>
                             </table>
+                            {% if pendingRemovalAccounts is empty %}
+                                <p class="mt-2">Vous n'avez aucun compte en attente de suppression.</p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
