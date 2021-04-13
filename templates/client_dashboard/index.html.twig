@@ -87,6 +87,9 @@
 
                                     </tbody>
                                 </table>
+                                {% if client.account.transactions is empty %}
+                                    <p class="mt-2">Vous n'avez aucune transaction sur votre compte bancaire.</p>
+                                {% endif %}
                             </div>
                         </div>
                     {% endif %}
