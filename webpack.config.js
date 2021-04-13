@@ -35,6 +35,9 @@ Encore
      */
     .addEntry('app', './assets/app.js')
 
+    // add home entry for js in homepage
+    .addEntry('home', './assets/home.js')
+
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
     .enableStimulusBridge('./assets/controllers.json')
 
@@ -51,6 +54,7 @@ Encore
             config: './postcss.config.js'
         };
     })
+
 
     /*
      * FEATURE CONFIG

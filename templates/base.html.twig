@@ -15,5 +15,10 @@
     </head>
     <body>
         {% block body %}{% endblock %}
+
+        {% set current_path = app.request.get('_route') %}
+        {% if current_path is same as 'home' %}
+            {{ encore_entry_script_tags('home') }}
+        {% endif %}
     </body>
 </html>
