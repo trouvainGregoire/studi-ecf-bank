@@ -30,34 +30,41 @@ class ClientDispatcher
 
         $defaultScore = 1;
 
-        foreach ($bankers as $banker){
+        foreach ($bankers as $banker) {
             $bankersScore[$banker->getId()] = $defaultScore;
         }
 
         $banker = null;
 
-        foreach ($pendingAccounts as $account){
+        foreach ($pendingAccounts as $account) {
             $accountClient = $account->getClient();
             $bankerCLient = $accountClient->getBanker();
 
-            if(!$bankerCLient){
+            if (!$bankerCLient) {
                 continue;
             }
 
-            if(array_key_exists($bankerCLient->getId(), $bankersScore)){
+            if (array_key_exists($bankerCLient->getId(), $bankersScore)) {
                 $bankersScore[$bankerCLient->getId()] = $bankersScore[$bankerCLient->getId()] + 1;
-            }else{
+            } else {
                 $bankersScore[$bankerCLient->getId()] = $defaultScore;
             }
 
         }
 
-        if(!empty($bankersScore)){
+        if (!empty($bankersScore)) {
             asort($bankersScore, SORT_NUMERIC);
-            $banker = $this->entityManager->getRepository(Banker::class)->find(array_key_first($bankersScore));
-        }else{
-            $banker = $this->entityManager->getRepository(Banker::class)->findAll()[0];
+
+            if (count(array_unique($bankersScore)) === 1) {
+                $banker = $this->entityManager->getRepository(Banker::class)->find(array_rand($bankersScore, 1));
+            } else {
+                $banker = $this->entityManager->getRepository(Banker::class)->find(array_key_first($bankersScore));
+            }
+
+        } else {
+            $banker = array_rand($bankers, 1);
         }
+
 
         $banker->addClient($client);
 

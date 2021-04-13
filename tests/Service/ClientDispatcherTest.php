@@ -5,6 +5,7 @@ namespace App\Tests\Service;
 use App\Entity\Account;
 use App\Entity\Banker;
 use App\Service\ClientDispatcher;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManager;
 use App\Entity\Client;
 use PHPUnit\Framework\TestCase;
@@ -26,18 +27,6 @@ class ClientDispatcherTest extends KernelTestCase
             ->getManager();
     }
 
-    private function createBankers(){
-        for ($i = 0; $i <= 5; $i++) {
-            $banker = new Banker();
-            $email = 'banker-' . $i . '@bankin.net';
-            $banker->setEmail($email)
-                ->setPassword('123456');
-            $this->entityManager->persist($banker);
-        }
-
-        $this->entityManager->flush();
-    }
-
     public function testDispatchWithClients()
     {
         $this->createBankers();
@@ -51,7 +40,7 @@ class ClientDispatcherTest extends KernelTestCase
                 ->setPassword('12345')
                 ->setName('Name-' . $i)
                 ->setFirstname('First-' . $i)
-                ->setBirthdate(new \DateTimeImmutable())
+                ->setBirthdate(new DateTimeImmutable())
                 ->setAddress('5 rue du midi')
                 ->setZipcode(75015);
 
@@ -59,9 +48,9 @@ class ClientDispatcherTest extends KernelTestCase
             $account->setStatus('pending');
             $client->setAccount($account);
 
-            if($i != 6){
+            if ($i != 6) {
                 $bankers[$i]->addClient($client);
-            }else{
+            } else {
                 $bankers[0]->addClient($client);
             }
 
@@ -77,7 +66,7 @@ class ClientDispatcherTest extends KernelTestCase
             ->setPassword('12345')
             ->setName('Name-test')
             ->setFirstname('First-test')
-            ->setBirthdate(new \DateTimeImmutable())
+            ->setBirthdate(new DateTimeImmutable())
             ->setAddress('5 rue du midi')
             ->setZipcode(75015);
         $account = new Account();
@@ -97,7 +86,21 @@ class ClientDispatcherTest extends KernelTestCase
 
     }
 
-    public function testDispatchWithoutClients(){
+    private function createBankers()
+    {
+        for ($i = 0; $i <= 5; $i++) {
+            $banker = new Banker();
+            $email = 'banker-' . $i . '@bankin.net';
+            $banker->setEmail($email)
+                ->setPassword('123456');
+            $this->entityManager->persist($banker);
+        }
+
+        $this->entityManager->flush();
+    }
+
+    public function testDispatchWithoutClients()
+    {
         $this->createBankers();
 
         $client = new Client();
@@ -106,7 +109,7 @@ class ClientDispatcherTest extends KernelTestCase
             ->setPassword('12345')
             ->setName('Name-test')
             ->setFirstname('First-')
-            ->setBirthdate(new \DateTimeImmutable())
+            ->setBirthdate(new DateTimeImmutable())
             ->setAddress('5 rue du midi')
             ->setZipcode(75015);
 
@@ -123,20 +126,27 @@ class ClientDispatcherTest extends KernelTestCase
         $resultUser = $this->entityManager->getRepository(Client::class)->findOneBy(['email' => 'client-test@bankin.net']);
         $resultBanker = $resultUser->getBanker();
 
-        $this->assertEquals('banker-0@bankin.net', $resultBanker->getEmail());
+        $bankerEmails = [];
+
+        foreach ($this->entityManager->getRepository(Banker::class)->findAll() as $bankerEmail){
+            array_push($bankerEmails, $bankerEmail->getEmail());
+        }
+
+        $this->assertTrue(in_array($resultBanker->getEmail(), $bankerEmails));
     }
 
-    public function testDispatchWithTwoClients(){
+    public function testDispatchWithTwoClients()
+    {
         $this->createBankers();
 
-        for($i = 0; $i <= 2; $i++){
+        for ($i = 0; $i <= 2; $i++) {
             $client = new Client();
-            $email = 'client-' . $i .'@bankin.net';
+            $email = 'client-' . $i . '@bankin.net';
             $client->setEmail($email)
                 ->setPassword('12345')
                 ->setName('Name-' . $i)
                 ->setFirstname('First-')
-                ->setBirthdate(new \DateTimeImmutable())
+                ->setBirthdate(new DateTimeImmutable())
                 ->setAddress('5 rue du midi')
                 ->setZipcode(75015);
             $account = new Account();
@@ -154,15 +164,13 @@ class ClientDispatcherTest extends KernelTestCase
         $clientDispatcher->dispatch($clients[0]);
 
         $resultUser = $this->entityManager->getRepository(Client::class)->findOneBy(['email' => 'client-0@bankin.net']);
-        $resultBanker = $resultUser->getBanker();
-
-        $this->assertEquals('banker-0@bankin.net', $resultBanker->getEmail());
+        $resultBanker1 = $resultUser->getBanker();
 
         $clientDispatcher->dispatch($clients[1]);
 
         $resultUser = $this->entityManager->getRepository(Client::class)->findOneBy(['email' => 'client-1@bankin.net']);
-        $resultBanker = $resultUser->getBanker();
-        $this->assertNotEquals('banker-0@bankin.net', $resultBanker->getEmail());
+        $resultBanker2 = $resultUser->getBanker();
+        $this->assertNotEquals($resultBanker1->getEmail(), $resultBanker2->getEmail());
     }
 
     protected function tearDown(): void
