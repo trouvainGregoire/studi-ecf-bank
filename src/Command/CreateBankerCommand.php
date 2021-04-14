@@ -16,14 +16,10 @@ class CreateBankerCommand extends Command
 {
     protected static $defaultName = 'app:create-banker';
     protected static $defaultDescription = 'Add a short description for your command';
-    /**
-     * @var EntityManagerInterface
-     */
-    private EntityManagerInterface $entityManager;
-    /**
-     * @var EncoderFactoryInterface
-     */
-    private EncoderFactoryInterface $encoderFactory;
+
+    private $entityManager;
+
+    private $encoderFactory;
 
     public function __construct(EntityManagerInterface $entityManager, EncoderFactoryInterface $encoderFactory)
     {
