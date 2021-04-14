@@ -28,6 +28,7 @@ class ClientType extends AbstractType
             ->add('password', PasswordType::class)
             ->add('address', TextType::class)
             ->add('zipcode', NumberType::class, ['html5' => true])
+            ->add('city', TextType::class)
             ->add('idCarFile', VichFileType::class, ['attr' => ['accept' => 'application/pdf']])
             ->add('save', SubmitType::class, ['label' => 'Créer mon compte']);
     }

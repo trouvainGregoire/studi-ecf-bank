@@ -35,6 +35,7 @@ class ClientUtilsTest extends KernelTestCase
         $client->setEmail('client@bankin.net')
             ->setPassword('12345')
             ->setName('Name-test')
+            ->setCity('Strasbourg')
             ->setFirstname('First-test')
             ->setBirthdate(new DateTimeImmutable())
             ->setAddress('5 rue du midi')

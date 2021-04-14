@@ -117,6 +117,13 @@ class Client implements UserInterface
      */
     private $recipients;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
+     * @Assert\Length(max=255)
+     */
+    private $city;
+
     public function __construct()
     {
         $this->recipients = new ArrayCollection();
@@ -364,6 +371,18 @@ class Client implements UserInterface
                 $recipient->setClient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(string $city): self
+    {
+        $this->city = $city;
 
         return $this;
     }
