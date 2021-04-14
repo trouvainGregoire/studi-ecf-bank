@@ -17,14 +17,20 @@ jobs:
       # - image: circleci/mysql:5.7-ram
       #
       # - image: redis:2.8.19
+      - image: circleci/postgres:latest
+        environment:
+          - POSTGRES_USER=default
+          - POSTGRES_PASSWORD=secret
+          - POSTGRES_DB=default      
 
     steps:
       - checkout
 
       - run: sudo apt update # PHP CircleCI 2.0 Configuration File# PHP CircleCI 2.0 Configuration File sudo apt install zlib1g-dev libsqlite3-dev
-      - run: sudo apt-get install libwebp-dev libjpeg-dev libpng-dev libxpm-dev libfreetype6-dev libbz2-dev
+      - run: sudo apt-get install libpq-dev libwebp-dev libjpeg-dev libpng-dev libxpm-dev libfreetype6-dev libbz2-dev
       - run: sudo docker-php-ext-install zip
-      - run: sudo docker-php-ext-enable pdo_pgsql
+      #- run: sudo docker-php-ext-enable pdo_pgsql
+      - run: sudo docker-php-ext-install pdo_pgsql && sudo docker-php-ext-enable pdo_pgsql
       #- run: sudo docker-php-ext-install pdo pdo_pgsql
       # Download and cache dependencies
       - restore_cache:
