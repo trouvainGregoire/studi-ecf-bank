@@ -2,7 +2,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use App\Repository\ClientRepository;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,10 +15,21 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator as BankAssert;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ClientRepository::class)
  * @Vich\Uploadable
+ * @ApiResource(
+ *   collectionOperations={
+ *     "get"={
+ *      "access_control"="is_granted('ROLE_BANKER')",
+ *      "normalization_context"={"groups"="banker:list"}
+ *      }
+ *     },
+ *   itemOperations={"get"={"access_control"="is_granted('ROLE_BANKER')","normalization_context"={"groups"="banker:show"}}},
+ * )
  */
 class Client implements UserInterface
 {
@@ -23,6 +37,9 @@ class Client implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups(
+     *  {"banker:list"}
+     * )
      */
     private $id;
 
@@ -32,6 +49,9 @@ class Client implements UserInterface
      * @Assert\Length(max=180)
      * @Assert\Email
      * @BankAssert\IsUniqueEmail
+     * @Groups(
+     *  {"banker:list"}
+     * )
      */
     private $email;
 
@@ -51,6 +71,9 @@ class Client implements UserInterface
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
      * @Assert\Length(max=255)
+     * @Groups(
+     *  {"banker:list"}
+     * )
      */
     private $name;
 
@@ -58,12 +81,18 @@ class Client implements UserInterface
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
      * @Assert\Length(max=255)
+     * @Groups(
+     *  {"banker:list"}
+     * )
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="date")
      * @Assert\NotBlank
+     * @Groups(
+     *  {"banker:list"}
+     * )
      */
     private $birthdate;
 
@@ -71,6 +100,9 @@ class Client implements UserInterface
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
      * @Assert\Length(max=255)
+     * @Groups(
+     *  {"banker:list"}
+     * )
      */
     private $address;
 
@@ -78,11 +110,17 @@ class Client implements UserInterface
      * @ORM\Column(type="integer")
      * @Assert\NotBlank
      * @Assert\Positive
+     * @Groups(
+     *  {"banker:list"}
+     * )
      */
     private $zipcode;
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     * @Groups(
+     *  {"banker:list"}
+     * )
      */
     private $idCardName;
 
@@ -98,12 +136,15 @@ class Client implements UserInterface
     /**
      * @ORM\Column(type="datetime", nullable=true)
      *
-     * @var \DateTimeInterface|null
+     * @var DateTimeInterface|null
      */
     private $updatedAt;
 
     /**
      * @ORM\OneToOne(targetEntity=Account::class, mappedBy="client", cascade={"persist", "remove"})
+     * @Groups(
+     *  {"banker:list"}
+     * )
      */
     private $account;
 
@@ -121,6 +162,9 @@ class Client implements UserInterface
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
      * @Assert\Length(max=255)
+     * @Groups(
+     *  {"banker:list"}
+     * )
      */
     private $city;
 
@@ -153,7 +197,7 @@ class Client implements UserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -180,7 +224,7 @@ class Client implements UserInterface
      */
     public function getPassword(): string
     {
-        return (string) $this->password;
+        return (string)$this->password;
     }
 
     public function setPassword(string $password): self
@@ -234,12 +278,12 @@ class Client implements UserInterface
         return $this;
     }
 
-    public function getBirthdate(): ?\DateTimeInterface
+    public function getBirthdate(): ?DateTimeInterface
     {
         return $this->birthdate;
     }
 
-    public function setBirthdate(\DateTimeInterface $birthdate): self
+    public function setBirthdate(DateTimeInterface $birthdate): self
     {
         $this->birthdate = $birthdate;
 
@@ -295,23 +339,23 @@ class Client implements UserInterface
     {
         $this->idCarFile = $idCarFile;
 
-        if(null !== $idCarFile){
-            $this->updatedAt = new \DateTimeImmutable();
+        if (null !== $idCarFile) {
+            $this->updatedAt = new DateTimeImmutable();
         }
     }
 
     /**
-     * @return \DateTimeInterface|null
+     * @return DateTimeInterface|null
      */
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
     /**
-     * @param \DateTimeInterface|null $updatedAt
+     * @param DateTimeInterface|null $updatedAt
      */
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): void
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
     }

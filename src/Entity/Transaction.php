@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\TransactionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -21,12 +22,18 @@ class Transaction
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups(
+     *  {"banker:list"}
+     * )
      */
     private $type;
 
     /**
      * @ORM\Column(type="float")
      * @Assert\Positive
+     * @Groups(
+     *  {"banker:list"}
+     * )
      */
     private $amount;
 
@@ -39,11 +46,17 @@ class Transaction
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Assert\Length(max=255)
+     * @Groups(
+     *  {"banker:list"}
+     * )
      */
     private $description;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups(
+     *  {"banker:list"}
+     * )
      */
     private $createdAt;
 
