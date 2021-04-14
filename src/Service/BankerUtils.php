@@ -40,6 +40,15 @@ class BankerUtils
     public function deleteAccount(Account $account)
     {
         $client = $account->getClient();
+
+        $linkedRecipients = $this->entityManager
+            ->getRepository(Recipient::class)
+            ->findBy(['accountIdentifier' => $client->getAccount()->getIdentifier()]);
+
+        foreach ($linkedRecipients as $linkedRecipient){
+            $this->entityManager->remove($linkedRecipient);
+        }
+
         $this->entityManager->remove($client);
         $this->entityManager->flush();
     }

@@ -56,6 +56,7 @@ class BankerUtilsTest extends KernelTestCase
             ->setZipcode(75015);
 
         $account = new Account();
+        $account->setIdentifier('BKTEST');
 
         $client->setAccount($account);
 
@@ -203,9 +204,43 @@ class BankerUtilsTest extends KernelTestCase
         $this->entityManager->flush();
     }
 
+    private function generateSecondClient()
+    {
+        $clientOriginel = $this->entityManager->getRepository(Client::class)->findOneBy(['email' => 'client@bankin.net']);
+
+        $client = new Client();
+        $client->setEmail('client1@bankin.net')
+            ->setPassword('12345')
+            ->setName('Name-test')
+            ->setFirstname('First-test')
+            ->setBirthdate(new DateTimeImmutable())
+            ->setAddress('5 rue du midi')
+            ->setZipcode(75015);
+
+        $account = new Account();
+
+        $client->setAccount($account);
+
+        $recipient = new Recipient();
+        $recipient
+            ->setName('test')
+            ->setFirstname('test')
+            ->setAccountIdentifier($clientOriginel->getAccount()->getIdentifier());
+
+        $this->entityManager->persist($client);
+
+        $recipient->setClient($client);
+
+        $this->entityManager->persist($recipient);
+
+        $this->entityManager->flush();
+    }
+
     public function testDeleteAccount()
     {
         $this->createDataForTesting();
+
+        $this->generateSecondClient();
 
         $this->generatePendingRemovalAccount();
 
@@ -217,6 +252,18 @@ class BankerUtilsTest extends KernelTestCase
 
         $deletedClient = $this->entityManager->getRepository(Client::class)->findOneBy(['email' => 'client@bankin.net']);
         $this->assertNull($deletedClient);
+
+        $recipients = $this->entityManager->getRepository(Recipient::class)->findAll();
+
+        $hasOrphan = false;
+
+        foreach ($recipients as $recipient){
+            if($recipient->getAccountIdentifier() === 'BKTEST'){
+                $hasOrphan = true;
+            }
+        }
+
+        $this->assertFalse($hasOrphan);
     }
 
     protected function tearDown(): void
