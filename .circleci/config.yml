@@ -57,7 +57,7 @@ jobs:
             - node_modules
 
       # prepare the database
-      - run: php bin/console doctrine:database:create
+      - run: php bin/console doctrine:database:create --env=test
       #- run: touch storage/testing.sqlite
       #- run: php artisan migrate --env=testing --database=sqlite_testing --force
 
