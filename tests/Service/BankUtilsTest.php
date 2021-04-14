@@ -42,6 +42,7 @@ class BankUtilsTest extends KernelTestCase
         $client->setEmail('client@bankin.net')
             ->setPassword('12345')
             ->setName('Name-test')
+            ->setCity('Strasbourg')
             ->setFirstname('First-test')
             ->setBirthdate(new DateTimeImmutable())
             ->setAddress('5 rue du midi')
@@ -59,6 +60,7 @@ class BankUtilsTest extends KernelTestCase
             ->setPassword('12345')
             ->setName('Name-test-2')
             ->setFirstname('First-test-2')
+            ->setCity('Strasbourg')
             ->setBirthdate(new DateTimeImmutable())
             ->setAddress('5 rue du midi')
             ->setZipcode(75015);

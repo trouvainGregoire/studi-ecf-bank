@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator as BankAssert;
 
 /**
  * @ORM\Entity(repositoryClass=ClientRepository::class)
@@ -30,6 +31,7 @@ class Client implements UserInterface
      * @Assert\NotBlank
      * @Assert\Length(max=180)
      * @Assert\Email
+     * @BankAssert\IsUniqueEmail
      */
     private $email;
 
@@ -114,6 +116,13 @@ class Client implements UserInterface
      * @ORM\OneToMany(targetEntity=Recipient::class, mappedBy="client", cascade={"remove"})
      */
     private $recipients;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
+     * @Assert\Length(max=255)
+     */
+    private $city;
 
     public function __construct()
     {
@@ -362,6 +371,18 @@ class Client implements UserInterface
                 $recipient->setClient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(string $city): self
+    {
+        $this->city = $city;
 
         return $this;
     }

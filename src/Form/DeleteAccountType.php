@@ -14,7 +14,7 @@ class DeleteAccountType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('idDeleteSignatureFile', VichFileType::class)
+            ->add('idDeleteSignatureFile', VichFileType::class, ['attr' => ['accept' => 'application/pdf']])
             ->add('save', SubmitType::class, ['label' => 'Demander la suppression de mon compte'])
         ;
     }

@@ -9,6 +9,7 @@ use App\Form\DeleteAccountType;
 use App\Form\RecipientType;
 use App\Form\TransactionType;
 use App\Service\BankUtils;
+use App\Service\ClientUtils;
 use LogicException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -53,6 +54,7 @@ class ClientDashboardController extends AbstractController
 
         return $this->render('client_dashboard/show_activated_recipients.html.twig', [
             'recipients' => $client->getRecipients(),
+            'client' => $client,
             'isPending' => $client->getAccount()->getStatus() === 'pending'
         ]);
     }
@@ -60,7 +62,7 @@ class ClientDashboardController extends AbstractController
     /**
      * @Route("/dashboard/create-transaction", name="client_create_transaction")
      */
-    public function createTransaction(Request $request, BankUtils $bankUtils): Response
+    public function createTransaction(Request $request, BankUtils $bankUtils, ClientUtils $clientUtils): Response
     {
         /** @var Client $client */
         $client = $this->getUser();
@@ -80,6 +82,7 @@ class ClientDashboardController extends AbstractController
                 $form->addError(new FormError($exception->getMessage()));
                 return $this->render('client_dashboard/create_transaction.html.twig', [
                     'recipients' => $client->getRecipients(),
+                    'activatedRecipients' => $clientUtils->getActivatedRecipients($client),
                     'isPending' => $client->getAccount()->getStatus() === 'pending',
                     'form' => $form->createView()
                 ]);
@@ -90,6 +93,8 @@ class ClientDashboardController extends AbstractController
 
         return $this->render('client_dashboard/create_transaction.html.twig', [
             'recipients' => $client->getRecipients(),
+            'activatedRecipients' => $clientUtils->getActivatedRecipients($client),
+            'client' => $client,
             'isPending' => $client->getAccount()->getStatus() === 'pending',
             'form' => $form->createView()
         ]);
@@ -121,6 +126,7 @@ class ClientDashboardController extends AbstractController
 
         return $this->render('client_dashboard/create_recipient.html.twig', [
             'recipients' => $client->getRecipients(),
+            'client' => $client,
             'isPending' => $client->getAccount()->getStatus() === 'pending',
             'form' => $form->createView(),
         ]);
@@ -149,6 +155,7 @@ class ClientDashboardController extends AbstractController
 
         return $this->render('client_dashboard/delete_account.html.twig', [
             'recipients' => $client->getRecipients(),
+            'client' => $client,
             'isPending' => $client->getAccount()->getStatus() === 'pending',
             'form' => $form->createView(),
         ]);

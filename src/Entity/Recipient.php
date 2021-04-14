@@ -41,6 +41,7 @@ class Recipient
     /**
      * @ORM\Column(type="string", length=255)
      * @BankAssert\IsAccountIdentifier
+     * @BankAssert\IsUniqueRecipientForClient
      */
     private $accountIdentifier;
 
