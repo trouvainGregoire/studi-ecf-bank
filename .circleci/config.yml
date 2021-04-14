@@ -52,11 +52,7 @@ jobs:
       #- run: touch storage/testing.sqlite
       #- run: php artisan migrate --env=testing --database=sqlite_testing --force
 
-      test:
-        - override:
-            - vendor/bin/phpunit --configuration testing-circle.xml --no-configuration
-
       # run tests with phpunit or codecept
-      - run: ./vendor/bin/phpunit
+      - run: vendor/bin/phpunit
       #- run: ./vendor/bin/codecept build
       #- run: ./vendor/bin/codecept run
