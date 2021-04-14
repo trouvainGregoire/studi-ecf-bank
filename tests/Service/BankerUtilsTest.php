@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Service;
+namespace App\Tests\Service;
 
 
 use App\Entity\Account;

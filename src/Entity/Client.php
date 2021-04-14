@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
 use App\Repository\ClientRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
