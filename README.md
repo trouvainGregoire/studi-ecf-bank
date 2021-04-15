@@ -107,4 +107,4 @@ Une fois cela fait :
 Questions et réflexions
 =========
 Le document questions et réflexions ce trouve dans le dossier pdf.
-Vous pouvez également cliquer sur ce [lien](https://github.com/trouvainGregoire/studi-ecf-bank/blob/master/pdf/Manuel%20d'utilisation%20-%20ECF%20Banque.pdf)
+Vous pouvez également cliquer sur ce [lien](https://github.com/trouvainGregoire/studi-ecf-bank/blob/master/pdf/Questions%20et%20R%C3%A9ponses%20-%20ECF%20Banque.pdf)
