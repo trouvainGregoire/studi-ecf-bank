@@ -11,6 +11,7 @@ Sommaire
 * [Détails du projet](#details-du-projet)
 * [Guide d'utilisation](#guide-dutilisation)
 * [Déploiement](#déploiement)
+* [Installation en local](#installation-en-local)
 * [Questions et réflexions](#questions-et-reflexions)
 <!--te-->
 
@@ -78,5 +79,30 @@ Il faut avoir créer un bucket s3 ainsi qu'avoir récupéré :
 * Lancer le déploiement
   * ```git push heroku master```
 
+Installation en local
+====================
+
+Pour installer le projet en local. Vous devez avoir un environement de développement correctement configuré.
+
+[Mettre en place un environement de développement](https://symfony.com/doc/current/setup.html)
+
+Une fois cela fait :
+
+* Cloner le projet
+  * ````git clone https://github.com/trouvainGregoire/studi-ecf-bank.git````
+* Créer une copie du .env en le nommant .env.local
+  * ````cp .env .env.local````
+* Modifier le fichier .env.local afin de le rendre compatible avec votre environement
+* Installer les dépendances php
+  * ````composer install````
+* Installer les dépendances javascript    
+  * ````yarn install````
+* Exécuter les migrations sur la base de données
+  * ```php bin/console doctrine:migrations:migrate```
+* Compiler le javascript
+  * ````yarn encore dev````
+* Lancer le projet
+  * ````symfony server:start````
+    
 Questions et réflexions
 =========
