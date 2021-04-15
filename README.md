@@ -10,7 +10,7 @@ Sommaire
 <!--ts-->
 * [Détails du projet](#details-du-projet)
 * [Guide d'utilisation](#guide-dutilisation)
-* [Déploiement](#deploiement)
+* [Déploiement](#déploiement)
 * [Questions et réflexions](#questions-et-reflexions)
 <!--te-->
 
@@ -64,7 +64,7 @@ Il faut avoir créer un bucket s3 ainsi qu'avoir récupéré :
 
 [Documentation aws bucket s3](https://docs.aws.amazon.com/fr_fr/AmazonS3/latest/dev/UsingBucket.html)
 
-####Déploiement sur Heroku
+#### Déploiement sur Heroku
 
 * Créer une nouvelle aplication avec la cli
   * ````heroku create````
