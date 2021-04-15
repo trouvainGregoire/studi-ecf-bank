@@ -55,6 +55,28 @@ Vous pouvez également cliquer sur ce [lien](https://github.com/trouvainGregoire
 
 Déploiement
 =========
+Afin de déployer le projet sur Heroku. Il est important d'avoir créer un compte sur celui-ci et également avoir créer un compte sur aws.
+
+Il faut avoir créer un bucket s3 ainsi qu'avoir récupéré :
+* La clé du bucket s3
+* La clé secret du bucket s3
+* Le nom du bucket s3
+
+[Documentation aws bucket s3](https://docs.aws.amazon.com/fr_fr/AmazonS3/latest/dev/UsingBucket.html)
+
+####Déploiement sur Heroku
+
+* Créer une nouvelle aplication avec la cli
+  * ````heroku create````
+* Configurer les variables d'environnement
+  * ```heroku config:set APP_ENV=prod```
+  * ```heroku config:set AWS_KEY=votreKeyS3```
+  * ```heroku config:set AWS_SECRET=votreKeySecretS3```
+  * ```heroku config:set AWS_BUCKET=votreNomDuBucketS3```
+* Ajouter une instance de Postgresql pour votre projet
+  * ```heroku addons:create heroku-postgresql:hobby-dev```
+* Lancer le déploiement
+  * ```git push heroku master```
 
 Questions et réflexions
 =========
