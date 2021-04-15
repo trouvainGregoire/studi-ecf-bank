@@ -50,7 +50,8 @@ Il permet aux 5 comptes banquiers créés sur la base, de valider les demandes d
 
 Guide d'utilisation
 =========
-
+Le guide d'utilisation ce trouve dans le dossier pdf. 
+Vous pouvez également cliquer sur ce [lien](https://github.com/trouvainGregoire/studi-ecf-bank/blob/master/pdf/Manuel%20d'utilisation%20-%20ECF%20Banque.pdf)
 
 Déploiement
 =========
