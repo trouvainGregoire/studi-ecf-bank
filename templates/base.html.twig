@@ -4,6 +4,29 @@
     {% set current_path = app.request.get('_route') %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- Meta tags for SEO -->
+    <meta name="description"
+          content="Découvrez Bank'in, La Banque 100% numérique, garantie sans paperasse et sans frais cachés. Nous vous offrons 150 € à la création de votre compte !"/>
+    <link rel="canonical" href="{{ absolute_url(path('home')) }}"/>
+    <meta property="og:locale" content="fr_FR"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:title" content="Bank'in - La première banque que vous allez aimer"/>
+    <meta property="og:description"
+          content="Découvrez Bank'in, La Banque 100% numérique, garantie sans paperasse et sans frais cachés. Nous vous offrons 150 € à la création de votre compte !"/>
+    <meta property="og:url" content="{{ absolute_url(path('home')) }}"/>
+    <meta property="og:site_name" content="Bank'in"/>
+    <meta property="og:image"
+          content="{{ asset('build/logo.png') }}"/>
+    <meta property="og:image:secure_url"
+          content="{{ asset('build/logo.png') }}"/>
+    <meta property="og:image:width" content="1024"/>
+    <meta property="og:image:height" content="1024"/>
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:description"
+          content="Découvrez Bank'in, La Banque 100% numérique, garantie sans paperasse et sans frais cachés. Nous vous offrons 150 € à la création de votre compte !"/>
+    <meta name="twitter:title" content="Bank'in - La première banque que vous allez aimer"/>
+    <meta name="twitter:image" content="{{ asset('build/logo.png') }}"/>
+
     <title>{% block title %}Bienvenue sur Bank'in votre future nouvelle banque{% endblock %}</title>
     {% block stylesheets %}
         {{ encore_entry_link_tags('app') }}
