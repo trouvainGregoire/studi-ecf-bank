@@ -4,6 +4,8 @@
 ## Description :
 Réaliser une application qui simule un portail de banque en ligne permettant d’effectuer des opérations de création de compte client, validation de la création par un banquier, consultation de compte bancaire, réalisation de virement en lien avec une BDD.
 
+[Lien vers le tableau de gestion du projet](https://www.notion.so/622207070a80478f913fbc7c0c711f64?v=df8f9cb665dc463fbd9903a98ef632ca)
+
 Sommaire
 =========
 
@@ -99,6 +101,8 @@ Une fois cela fait :
   * ````yarn install````
 * Exécuter les migrations sur la base de données
   * ```php bin/console doctrine:migrations:migrate```
+* Créer les comptes banquiers
+  * ````php bin/console app:create-banker email password````
 * Compiler le javascript
   * ````yarn encore dev````
 * Lancer le projet
