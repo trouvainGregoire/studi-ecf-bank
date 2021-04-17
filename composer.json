@@ -97,7 +97,6 @@
             "./bin/phpunit"
         ],
         "compile": [
-            "yarn encore production",
             "php bin/console doctrine:migrations:migrate"
         ]
     },
