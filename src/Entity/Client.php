@@ -23,7 +23,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource(
  *   collectionOperations={
  *     "get"={
- *      "access_control"="is_granted('ROLE_BANKER')",
+ *      "security"="is_granted('ROLE_BANKER')",
  *      "normalization_context"={"groups"="banker:list"}
  *      }
  *     },
