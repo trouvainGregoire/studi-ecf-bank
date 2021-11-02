@@ -8,5 +8,8 @@ tasks:
   - name: Set Path for Symfony cli
     command: export PATH="$HOME/.symfony/bin:$PATH"
   - name: Install dependencies and start dev server
-    init: composer update
+    init: |
+      composer update
+      yarn install --ignore-engines
+      npm run watch
     command: symfony server:start
