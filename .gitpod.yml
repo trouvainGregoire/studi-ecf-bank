@@ -1,9 +1,7 @@
-# List the start up tasks. Learn more https://www.gitpod.io/docs/config-start-tasks/
-tasks:
-  - init: composer update # runs during prebuild
-    command: php -S 0.0.0.0:8000 -t public/
-
-# List the ports to expose. Learn more https://www.gitpod.io/docs/config-ports/
 ports:
   - port: 8000
     onOpen: open-preview
+
+tasks:
+  - init: composer update
+    command: php -S 0.0.0.0:8000 -t public/
