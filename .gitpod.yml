@@ -3,5 +3,10 @@ ports:
     onOpen: open-preview
 
 tasks:
-  - init: composer update
+  - name: Install Symfony cli
+    command: wget https://get.symfony.com/cli/installer -O - | bash
+  - name: Set Path for Symfony cli
+    command: export PATH="$HOME/.symfony/bin:$PATH"
+  - name: Install dependencies
+    init: composer update
     command: php -S 0.0.0.0:8000 -t public/
