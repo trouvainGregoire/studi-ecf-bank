@@ -7,6 +7,6 @@ tasks:
     command: wget https://get.symfony.com/cli/installer -O - | bash
   - name: Set Path for Symfony cli
     command: export PATH="$HOME/.symfony/bin:$PATH"
-  - name: Install dependencies
+  - name: Install dependencies and start dev server
     init: composer update
-    command: php -S 0.0.0.0:8000 -t public/
+    command: symfony server:start
